@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style>
+		.tabpanel { 
+			margin: 20px; 
+			padding: 0; 
+			height: 1%; /* IE fix for float bug */ 
+		} 
+		.tablist { 
+			margin: 0 0px; 
+			padding: 0; 
+			list-style: none; 
+		} 
+
+		.tab { 
+
+			margin: .2em 1px 0 0; 
+			padding: 10px; 
+			height: 1em; 
+			font-weight: bold; 
+			background-color: #ec9; 
+
+			border: 1px solid black; 
+			-webkit-border-radius-topright: 5px; 
+			-webkit-border-radius-topleft: 5px; 
+			-moz-border-radius-topright: 5px; 
+			-moz-border-radius-topleft: 5px; 
+			border-radius-topright: 5px; 
+			border-radius-topleft: 5px; 
+
+			float: left; 
+			display: inline; /* IE float bug fix */ 
+		} 
+
+		.panel { 
+			clear: both; 
+			display: block; 
+			margin: 0 0 0 0; 
+			padding: 10px; 
+			width: 600px; 
+			border: 1px solid black; 
+
+			-webkit-border-radius-topright: 10px; 
+			-webkit-border-radius-bottomleft: 10px; 
+			-webkit-border-radius-bottomright: 10px; 
+			-moz-border-radius-topright: 10px; 
+			-moz-border-radius-bottomleft: 10px; 
+			-moz-border-radius-bottomright: 10px; 
+			border-radius-topright: 10px; 
+			border-radius-bottomleft: 10px; 
+			border-radius-bottomright: 10px; 
+		} 
+
+		ul.controlList { 
+			list-style-type: none; 
+		} 
+
+		li[aria-selected='true'] { 
+			color: black; 
+			background-color: #fff; 
+			border-bottom: 1px solid white; 
+		} 
+
+		div[aria-hidden='true'] { 
+			display: none; 
+		} 
+
+		.focus { 
+			margin-top: 0; 
+			height: 1.2em; 
+		} 
+
+		.accordian { 
+			margin: 0; 
+			float: none; 
+			-webkit-border-radius: 0; 
+			-moz-border-radius: 0; 
+			border-radius: 0; 
+			width: 600px; 
+		} 
+
+		.hidden { 
+			position: absolute; 
+			left: -300em; 
+			top: -30em; 
+		} </style>
+</head>
+<body>
+	<div role="application"> 
+
+		<h2>Happy Time Pizza On-line Ordering System</h2> 
+
+		<form> 
+			<div class="tabpanel"> 
+				<div class="panel" data-tab-toggle='Crust'> 
+					<h3 id="crust-label">Select Crust</h3> 
+
+					<ul class="controlList" aria-labelledby="crust-label"> 
+						<li><input id="p1_opt1" type="radio" name="crust" value="crust1" /><label for="p1_opt1">Deep Dish</label></li> 
+						<li><input id="p1_opt2" type="radio" name="crust" value="crust2" checked="checked" /><label for="p1_opt2">Thick and cheesy</label></li> 
+						<li><input id="p1_opt3" type="radio" name="crust" value="crust3" /><label for="p1_opt3">Thick and spicy</label></li> 
+						<li><input id="p1_opt4" type="radio" name="crust" value="crust4" /><label for="p1_opt4">Thin</label></li> 
+					</ul> 
+				</div> 
+				<div class="panel" data-tab-toggle='Veggies'> 
+					<h3 id="veg-label">Select Vegetables</h3>   
+
+					<ul class="controlList" aria-labelledby="veg-label"> 
+						<li><input id="p2_opt1" type="checkbox" name="veg" value="black olives" /><label for="p2_opt1">Black Olives</label></li> 
+						<li><input id="p2_opt2" type="checkbox" name="veg" value="green olives" /><label for="p2_opt2">Green Olives</label></li> 
+						<li><input id="p2_opt3" type="checkbox" name="veg" value="green peppers" /><label for="p2_opt3">Green Peppers</label></li> 
+						<li><input id="p2_opt4" type="checkbox" name="veg" value="mushrooms" /><label for="p2_opt4">Mushrooms</label></li> 
+						<li><input id="p2_opt5" type="checkbox" name="veg" value="onions" /><label for="p2_opt5">Onions</label></li> 
+						<li><input id="p2_opt6" type="checkbox" name="veg" value="pineapple" /><label for="p2_opt6">Pineapple</label></li> 
+					</ul> 
+				</div> 
+				<div class="panel" data-tab-toggle='Carnivore'> 
+					<h3 id="meat-label">Select Carnivore Options</h3> 
+
+					<ul class="controlList" aria-labelledby="meat-label"> 
+						<li><input id="p3_opt1" type="checkbox" name="meat" value="pepperoni" /><label for="p3_opt1">Pepperoni</label></li> 
+						<li><input id="p3_opt2" type="checkbox" name="meat" value="sausage" /><label for="p3_opt2">Italian Sausage</label></li> 
+						<li><input id="p3_opt3" type="checkbox" name="meat" value="ham" /><label for="p3_opt3">Ham</label></li> 
+						<li><input id="p3_opt4" type="checkbox" name="meat" value="hamburger" /><label for="p3_opt4">Hamburger</label></li> 
+					</ul> 
+				</div> 
+				<div class="panel" data-tab-toggle='Delivery'> 
+					<h3 id="delivery-label">Select Delivery Method</h3> 
+
+					<ul class="controlList" aria-labelledby="delivery-label"> 
+						<li><input id="p4_opt1" type="radio" name="delivery" value="delivery1" checked="checked" /><label for="p4_opt1">Delivery</label></li> 
+						<li><input id="p4_opt2" type="radio" name="delivery" value="delivery2" /><label for="p4_opt2">Eat in</label></li> 
+						<li><input id="p4_opt3" type="radio" name="delivery" value="delivery3" /><label for="p4_opt3">Carry out</label></li> 
+						<li><input id="p4_opt4" type="radio" name="delivery" value="delivery4" /><label for="p4_opt4">Overnight mail</label></li> 
+					</ul> 
+				</div> 
+<!--
+				<ul class="tablist" role="tablist"> 
+					<li id="tab1" class="tab" aria-controls="panel1" aria-selected="true" role="tab" tabindex="0">Crust</li> 
+					<li id="tab2" class="tab" aria-controls="panel2" role="tab" aria-selected="false" tabindex="-1">Veggies</li> 
+					<li id="tab3" class="tab" aria-controls="panel3" role="tab" aria-selected="false" tabindex="-1">Carnivore</li> 
+					<li id="tab4" class="tab" aria-controls="panel4" role="tab" aria-selected="false" tabindex="-1">Delivery</li> 
+				</ul> 
+
+				<div id="panel1" class="panel" aria-labelledby="tab1" role="tabpanel"> 
+					<h3 id="crust-label">Select Crust</h3> 
+
+					<ul class="controlList" aria-labelledby="crust-label"> 
+						<li><input id="p1_opt1" type="radio" name="crust" value="crust1" /><label for="p1_opt1">Deep Dish</label></li> 
+						<li><input id="p1_opt2" type="radio" name="crust" value="crust2" checked="checked" /><label for="p1_opt2">Thick and cheesy</label></li> 
+						<li><input id="p1_opt3" type="radio" name="crust" value="crust3" /><label for="p1_opt3">Thick and spicy</label></li> 
+						<li><input id="p1_opt4" type="radio" name="crust" value="crust4" /><label for="p1_opt4">Thin</label></li> 
+					</ul> 
+				</div> 
+
+				<div id="panel2" class="panel" aria-labelledby="tab2" role="tabpanel"> 
+					<h3 id="veg-label">Select Vegetables</h3>   
+
+					<ul class="controlList" aria-labelledby="veg-label"> 
+						<li><input id="p2_opt1" type="checkbox" name="veg" value="black olives" /><label for="p2_opt1">Black Olives</label></li> 
+						<li><input id="p2_opt2" type="checkbox" name="veg" value="green olives" /><label for="p2_opt2">Green Olives</label></li> 
+						<li><input id="p2_opt3" type="checkbox" name="veg" value="green peppers" /><label for="p2_opt3">Green Peppers</label></li> 
+						<li><input id="p2_opt4" type="checkbox" name="veg" value="mushrooms" /><label for="p2_opt4">Mushrooms</label></li> 
+						<li><input id="p2_opt5" type="checkbox" name="veg" value="onions" /><label for="p2_opt5">Onions</label></li> 
+						<li><input id="p2_opt6" type="checkbox" name="veg" value="pineapple" /><label for="p2_opt6">Pineapple</label></li> 
+					</ul> 
+				</div> 
+
+				<div id="panel3" class="panel" aria-labelledby="tab3" role="tabpanel"> 
+					<h3 id="meat-label">Select Carnivore Options</h3> 
+
+					<ul class="controlList" aria-labelledby="meat-label"> 
+						<li><input id="p3_opt1" type="checkbox" name="meat" value="pepperoni" /><label for="p3_opt1">Pepperoni</label></li> 
+						<li><input id="p3_opt2" type="checkbox" name="meat" value="sausage" /><label for="p3_opt2">Italian Sausage</label></li> 
+						<li><input id="p3_opt3" type="checkbox" name="meat" value="ham" /><label for="p3_opt3">Ham</label></li> 
+						<li><input id="p3_opt4" type="checkbox" name="meat" value="hamburger" /><label for="p3_opt4">Hamburger</label></li> 
+					</ul> 
+				</div> 
+
+				<div id="panel4" class="panel" aria-labelledby="tab4" role="tabpanel"> 
+					<h3 id="delivery-label">Select Delivery Method</h3> 
+
+					<ul class="controlList" aria-labelledby="delivery-label"> 
+						<li><input id="p4_opt1" type="radio" name="delivery" value="delivery1" checked="checked" /><label for="p4_opt1">Delivery</label></li> 
+						<li><input id="p4_opt2" type="radio" name="delivery" value="delivery2" /><label for="p4_opt2">Eat in</label></li> 
+						<li><input id="p4_opt3" type="radio" name="delivery" value="delivery3" /><label for="p4_opt3">Carry out</label></li> 
+						<li><input id="p4_opt4" type="radio" name="delivery" value="delivery4" /><label for="p4_opt4">Overnight mail</label></li> 
+					</ul> 
+				</div> 
+-->
+			</div> 
+		</form> 
+
+	</div> 
+	
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+	<script src="bridget.js"></script>
+	<script src="acc.js"></script>
+	<script>
+		$(document).ready(function () {
+			$('.tabpanel').tabpanel({
+				//tabClass: 'tabs',
+				//panelClass: 'panels',
+				multiselectable: false
+			});
+		//var panel1 = new tabpanel("tabpanel1", false);
+		});
+	</script>
+</body>
+</html>
