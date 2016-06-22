@@ -94,7 +94,7 @@
 		<h2>Happy Time Pizza On-line Ordering System</h2> 
 
 		<form> 
-			<div class="tabpanel"> 
+			<div class="tpanelacc">
 				<div class="panel" data-tab-toggle='Crust'> 
 					<h3 id="crust-label">Select Crust</h3> 
 
@@ -136,61 +136,8 @@
 						<li><input id="p4_opt3" type="radio" name="delivery" value="delivery3" /><label for="p4_opt3">Carry out</label></li> 
 						<li><input id="p4_opt4" type="radio" name="delivery" value="delivery4" /><label for="p4_opt4">Overnight mail</label></li> 
 					</ul> 
-				</div> 
-<!--
-				<ul class="tablist" role="tablist"> 
-					<li id="tab1" class="tab" aria-controls="panel1" aria-selected="true" role="tab" tabindex="0">Crust</li> 
-					<li id="tab2" class="tab" aria-controls="panel2" role="tab" aria-selected="false" tabindex="-1">Veggies</li> 
-					<li id="tab3" class="tab" aria-controls="panel3" role="tab" aria-selected="false" tabindex="-1">Carnivore</li> 
-					<li id="tab4" class="tab" aria-controls="panel4" role="tab" aria-selected="false" tabindex="-1">Delivery</li> 
-				</ul> 
+				</div>
 
-				<div id="panel1" class="panel" aria-labelledby="tab1" role="tabpanel"> 
-					<h3 id="crust-label">Select Crust</h3> 
-
-					<ul class="controlList" aria-labelledby="crust-label"> 
-						<li><input id="p1_opt1" type="radio" name="crust" value="crust1" /><label for="p1_opt1">Deep Dish</label></li> 
-						<li><input id="p1_opt2" type="radio" name="crust" value="crust2" checked="checked" /><label for="p1_opt2">Thick and cheesy</label></li> 
-						<li><input id="p1_opt3" type="radio" name="crust" value="crust3" /><label for="p1_opt3">Thick and spicy</label></li> 
-						<li><input id="p1_opt4" type="radio" name="crust" value="crust4" /><label for="p1_opt4">Thin</label></li> 
-					</ul> 
-				</div> 
-
-				<div id="panel2" class="panel" aria-labelledby="tab2" role="tabpanel"> 
-					<h3 id="veg-label">Select Vegetables</h3>   
-
-					<ul class="controlList" aria-labelledby="veg-label"> 
-						<li><input id="p2_opt1" type="checkbox" name="veg" value="black olives" /><label for="p2_opt1">Black Olives</label></li> 
-						<li><input id="p2_opt2" type="checkbox" name="veg" value="green olives" /><label for="p2_opt2">Green Olives</label></li> 
-						<li><input id="p2_opt3" type="checkbox" name="veg" value="green peppers" /><label for="p2_opt3">Green Peppers</label></li> 
-						<li><input id="p2_opt4" type="checkbox" name="veg" value="mushrooms" /><label for="p2_opt4">Mushrooms</label></li> 
-						<li><input id="p2_opt5" type="checkbox" name="veg" value="onions" /><label for="p2_opt5">Onions</label></li> 
-						<li><input id="p2_opt6" type="checkbox" name="veg" value="pineapple" /><label for="p2_opt6">Pineapple</label></li> 
-					</ul> 
-				</div> 
-
-				<div id="panel3" class="panel" aria-labelledby="tab3" role="tabpanel"> 
-					<h3 id="meat-label">Select Carnivore Options</h3> 
-
-					<ul class="controlList" aria-labelledby="meat-label"> 
-						<li><input id="p3_opt1" type="checkbox" name="meat" value="pepperoni" /><label for="p3_opt1">Pepperoni</label></li> 
-						<li><input id="p3_opt2" type="checkbox" name="meat" value="sausage" /><label for="p3_opt2">Italian Sausage</label></li> 
-						<li><input id="p3_opt3" type="checkbox" name="meat" value="ham" /><label for="p3_opt3">Ham</label></li> 
-						<li><input id="p3_opt4" type="checkbox" name="meat" value="hamburger" /><label for="p3_opt4">Hamburger</label></li> 
-					</ul> 
-				</div> 
-
-				<div id="panel4" class="panel" aria-labelledby="tab4" role="tabpanel"> 
-					<h3 id="delivery-label">Select Delivery Method</h3> 
-
-					<ul class="controlList" aria-labelledby="delivery-label"> 
-						<li><input id="p4_opt1" type="radio" name="delivery" value="delivery1" checked="checked" /><label for="p4_opt1">Delivery</label></li> 
-						<li><input id="p4_opt2" type="radio" name="delivery" value="delivery2" /><label for="p4_opt2">Eat in</label></li> 
-						<li><input id="p4_opt3" type="radio" name="delivery" value="delivery3" /><label for="p4_opt3">Carry out</label></li> 
-						<li><input id="p4_opt4" type="radio" name="delivery" value="delivery4" /><label for="p4_opt4">Overnight mail</label></li> 
-					</ul> 
-				</div> 
--->
 			</div> 
 		</form> 
 
@@ -208,6 +155,28 @@
 			});
 		//var panel1 = new tabpanel("tabpanel1", false);
 		});
+		<script>
+			$(document).ready(function () {
+			$('.tpanelacc').tpanelacc({
+//				accordian: true,
+//				accordianIcon: false, //default true
+//				accordianImgIcon: {
+//					expanded: "http://www.oaa-accessibility.org/media/examples/images/expanded.gif",
+//					collapsed: "http://www.oaa-accessibility.org/media/examples/images/contracted.gif"
+//				},
+//				accordianImgAlt: {
+//					collapsed: "close",
+//					expanded: "open"
+//				},
+				//tabClass: 'tabs', //tab element class default panel
+				//panelClass: 'faq-item', //panel element class default panel
+				//createToggleElm: false, //default true
+				//accordianToggleElm: 'h2',
+				multiselectable: false,
+				//accordianFirstOpen:false
+			});
+		});
+	</script>
 	</script>
 </body>
 </html>
