@@ -232,9 +232,9 @@ tpanelacc.prototype.accordianLayout = function () {
 			'aria-labelledby': 'tp' + counter + '-tab' + idx,
 			'aria-hidden': ((accFirstOpen && idx == 0) ? 'false' : 'true')
 		}).css('display',((accFirstOpen && idx == 0) ? 'block' : 'none')).addClass('accordian');
-		var toggleImg = '';
+		var toggleImg = '<i class="acc-toggle"></i>';
 		if (set.accordianIcon) {
-			toggleImg = '<img src="' + ((accFirstOpen && idx == 0) ? set.accordianImgIcon.expanded : set.accordianImgIcon.collapsed) + '" alt="' + ((accFirstOpen && idx == 0) ? set.accordianImgAlt.expanded : set.accordianImgAlt.collapsed) + '" />';
+			toggleImg = '<i class="acc-toggle"><img src="' + ((accFirstOpen && idx == 0) ? set.accordianImgIcon.expanded : set.accordianImgIcon.collapsed) + '" alt="' + ((accFirstOpen && idx == 0) ? set.accordianImgAlt.expanded : set.accordianImgAlt.collapsed) + '" /></i>';
 		}
 		if (createTabElm) {
 			$(elm).wrap('<div class="panel-container"></div>');
@@ -271,7 +271,7 @@ tpanelacc.prototype._init =
 
 	//console.log(" inst " + counter);
 	//console.log(this.settings);
-} // end init() 
+} // end init()
 tpanelacc.prototype.switchTabs = function ($curTab, $newTab) {
 	// Remove the highlighting from the current tab
 	$curTab.removeClass('focus');
