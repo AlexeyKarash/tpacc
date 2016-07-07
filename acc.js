@@ -235,7 +235,7 @@ tpanelacc.prototype.accordianLayout = function () {
         }).css('display', ((accFirstOpen && idx == 0) ? 'block' : 'none')).addClass('accordian');
         var toggleImg = '<i class="acc-toggle"></i>';
         if (set.accordianIcon) {
-            toggleImg = '<i class="acc-toggle"><img src="' + ((accFirstOpen && idx == 0) ? set.accordianImgIcon.expanded : set.accordianImgIcon.collapsed) + '" alt="' + ((accFirstOpen && idx == 0) ? set.accordianImgAlt.expanded : set.accordianImgAlt.collapsed) + '" /></i>';
+            toggleImg = '<i class="acc-toggle"><img class="toggle-img" src="' + ((accFirstOpen && idx == 0) ? set.accordianImgIcon.expanded : set.accordianImgIcon.collapsed) + '" alt="' + ((accFirstOpen && idx == 0) ? set.accordianImgAlt.expanded : set.accordianImgAlt.collapsed) + '" /></i>';
         }
         if (createTabElm) {
             $(elm).wrap('<div class="panel-container"></div>');
@@ -339,14 +339,14 @@ tpanelacc.prototype.togglePanel = function ($tab) {
         if ($panel.attr('aria-hidden') == 'true') {
             //console.log('aa' + $tab);
             $panel.attr('aria-hidden', 'false').slideDown().triggerAll('data-attribute-changed data-visible-true');
-            $tab.find('img').attr('src', this.settings.accordianImgIcon.expanded).attr('alt', this.settings.accordianImgAlt.expanded);
+            $tab.find('.toggle-img').attr('src', this.settings.accordianImgIcon.expanded).attr('alt', this.settings.accordianImgAlt.expanded);
 
             // update the aria-expanded attribute
             $tab.attr('aria-expanded', 'true');
         } else {
             $panel.attr('aria-hidden', 'true').slideUp().trigger('data-attribute-changed');
             $panel.slideUp(100);
-            $tab.find('img').attr('src', this.settings.accordianImgIcon.collapsed).attr('alt', this.settings.accordianImgAlt.collapsed);
+            $tab.find('.toggle-img').attr('src', this.settings.accordianImgIcon.collapsed).attr('alt', this.settings.accordianImgAlt.collapsed);
 
             // update the aria-expanded attribute
             $tab.attr('aria-expanded', 'false');
@@ -367,11 +367,11 @@ tpanelacc.prototype.togglePanel = function ($tab) {
         });
 
         if (this.accordianView == true) {
-            this.$tabs.find('img').attr('src', this.settings.accordianImgIcon.collapsed)
+            this.$tabs.find('.toggle-img').attr('src', this.settings.accordianImgIcon.collapsed)
 				.attr('alt', this.settings.accordianImgAlt.collapsed); //'collapsed' - 'http://www.oaa-accessibility.org/media/examples/images/contracted.gif'
 
             // Update the selected tab's aria-selected attribute
-            $tab.find('img').attr('src', this.settings.accordianImgIcon.expanded)
+            $tab.find('.toggle-img').attr('src', this.settings.accordianImgIcon.expanded)
 				.attr('alt', this.settings.accordianImgAlt.expanded); //'expanded' - 'http://www.oaa-accessibility.org/media/examples/images/expanded.gif'
         }
         // show the clicked tab panel
