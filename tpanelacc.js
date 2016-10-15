@@ -1,4 +1,4 @@
-﻿(function (window, factory) {
+(function (window, factory) {
     'use strict';
     /* globals define: false, module: false, require: false */
 
@@ -156,6 +156,7 @@ function keyCodes() {
 var defaults = {
     accordian: false,
     multiselectable: true,
+    closeable: false,
     tabClass: 'tab',
     panelClass: 'panel',
     accordianIcon: true,
@@ -184,6 +185,7 @@ function tpanelacc(id, options) {
     this.accordianFirstOpen = ((this.accordianView) ? this.settings.accordianFirstOpen : true);
     //this.accordianIcon = this.settings.accordianIcon;
     this.createLayout();
+    this.closeable = ((!this.accordian) ? this.settings.closeable : false);
     //console.log('bbb');
     this.$tabs = this.$panel.find('.' + this.settings.tabClass); // Array of panel tabs.
     // Bind event handlers
@@ -213,8 +215,9 @@ tpanelacc.prototype.tpanelaccLayout = function () {
     });
     var tablist;
     if (this.$panel.find(".tablist").length == 0) {
-        tablist = this.$panel.find('.tablist');
+
         this.$panel.prepend('<ul class="tablist" role="tablist"></ul>');
+        tablist = this.$panel.find('.tablist');
         for (i = 0; i < this.$panels.length; i++) {
             tablist.append('<li id="tp' + counter + '-tab' + i + '" class="' + set.tabClass + '" aria-controls="tp' + counter + '-panel' + i + '" aria-selected="' + ((i == 0) ? 'true' : 'false') + '" role="tab" tabindex="' + ((i == 0) ? '0' : '-1') + '">' + tabsTitles[i] + '</li>');
         }
@@ -234,7 +237,6 @@ tpanelacc.prototype.tpanelaccLayout = function () {
     
     
     //this.$tabs = this.$panel.find('.'+settings.tabClass); // Array of panel tabs.
-    //console.log(this.$tabs);
 }
 tpanelacc.prototype.accordianLayout = function () {
     //var tabsTitles = [];
@@ -257,11 +259,11 @@ tpanelacc.prototype.accordianLayout = function () {
         }
         if (createTabElm) {
             //$(elm).wrap('<div class="panel-container"></div>');
-            $(elm).closest('.panel-container').prepend('<' + set.accordianToggleElm + ' id="tp' + counter + '-tab' + idx + '" class="accordian ' + set.tabClass + '" aria-controls="tp' + counter + '-panel' + idx + '" aria-selected="' + ((accFirstOpen && idx == 0) ? 'true' : 'false') + '" role="tab" tabindex="' + ((idx == 0) ? '0' : '-1') + '">' + $(elm).data('tab-toggle') + '</' + set.accordianToggleElm + '>');
+            $(elm).before('<' + set.accordianToggleElm + ' id="tp' + counter + '-tab' + idx + '" class="accordian ' + set.tabClass + '" aria-controls="tp' + counter + '-panel' + idx + '" aria-selected="' + ((accFirstOpen && idx == 0) ? 'true' : 'false') + '" role="tab" tabindex="' + ((idx == 0) ? '0' : '-1') + '">' + $(elm).data('tab-toggle') + '</' + set.accordianToggleElm + '>');
             if (set.accordianIconToEnd) {
-                $(elm).closest('.panel-container').find(".accordian").append(toggleImg);
+                $(elm).prev(".accordian").append(toggleImg);
             } else {
-                $(elm).closest('.panel-container').find(".accordian").prepend(toggleImg);
+                $(elm).prev(".accordian").prepend(toggleImg);
             }
         } else {
             $(elm).prev("." + set.tabClass).addClass("accordian")
@@ -304,8 +306,6 @@ tpanelacc.prototype.init = function () {
     // show the panel that the selected tab controls and set aria-hidden to false
     this.$panel.find('#' + $tab.attr('aria-controls')).attr({'aria-hidden':'false','tabindex':"0"});
 
-    //console.log(" inst " + counter);
-    //console.log(this.settings);
 } // end init()
 tpanelacc.prototype.switchTabs = function ($curTab, $newTab) {
     console.log("switchTabs");
@@ -355,9 +355,8 @@ tpanelacc.prototype.switchTabs = function ($curTab, $newTab) {
 tpanelacc.prototype.togglePanel = function ($tab) {
     console.log("togglePanel");
     $panel = this.$panel.find('#' + $tab.attr('aria-controls'));
-    if (this.accordian == true && this.accordianView == true) {
+    if (this.accordian == true && this.accordianView == true ) {
         if ($panel.attr('aria-hidden') == 'true') {
-            //console.log('aa' + $tab);
             $panel.attr({'aria-hidden':'false','tabindex':'0'}).slideDown().triggerAll('data-attribute-changed data-visible-true');
             $tab.find('.toggle-img').attr('src', this.settings.accordianImgIcon.expanded).attr('alt', this.settings.accordianImgAlt.expanded);
 
@@ -372,6 +371,10 @@ tpanelacc.prototype.togglePanel = function ($tab) {
             $tab.attr('aria-expanded', 'false');
         }
     } else {
+        var isCurrentSelected = false;
+        if($panel.attr('aria-hidden') == 'false'){
+            isCurrentSelected = true;
+        }
         this.$panels.attr({'aria-hidden':'true','tabindex':'-1'}).trigger('data-attribute-changed');//.slideUp();
         this.accordianView ? this.$panels.not($panel).slideUp() : this.$panels.not($panel).hide();
         // remove all tabs from the tab order and reset their aria-selected attribute
@@ -380,34 +383,40 @@ tpanelacc.prototype.togglePanel = function ($tab) {
             "aria-expanded": 'false'
         });
         // Update the selected tab's aria-selected attribute
-        $tab.attr({
-            'aria-selected': 'true',
-            "aria-expanded": 'true'
-        });
-
-        if (this.accordianView == true) {
-            this.$tabs.find('.toggle-img').attr('src', this.settings.accordianImgIcon.collapsed)
-				.attr('alt', this.settings.accordianImgAlt.collapsed); //'collapsed' - 'http://www.oaa-accessibility.org/media/examples/images/contracted.gif'
-
-            // Update the selected tab's aria-selected attribute
-            $tab.find('.toggle-img').attr('src', this.settings.accordianImgIcon.expanded)
-				.attr('alt', this.settings.accordianImgAlt.expanded); //'expanded' - 'http://www.oaa-accessibility.org/media/examples/images/expanded.gif'
+        var stop = false;
+        if(isCurrentSelected && !this.accordian && this.closeable) {
+            stop = true;
         }
-        // show the clicked tab panel
-        $panel.attr({'aria-hidden': 'false', 'tabindex':'0'}).triggerAll('data-attribute-changed data-visible-true');
-        this.accordianView ? $panel.slideDown() : $panel.show();
+        if(!stop){
+            $tab.attr({
+                'aria-selected': 'true',
+                "aria-expanded": 'true'
+            });
+            if (this.accordianView == true) {
+                this.$tabs.find('.toggle-img').attr('src', this.settings.accordianImgIcon.collapsed)
+                    .attr('alt', this.settings.accordianImgAlt.collapsed); //'collapsed' - 'http://www.oaa-accessibility.org/media/examples/images/contracted.gif'
+                // Update the selected tab's aria-selected attribute
+                $tab.find('.toggle-img').attr('src', this.settings.accordianImgIcon.expanded)
+                    .attr('alt', this.settings.accordianImgAlt.expanded); //'expanded' - 'http://www.oaa-accessibility.org/media/examples/images/expanded.gif'
+            }
+            // show the clicked tab panel
+            $panel.attr({'aria-hidden': 'false', 'tabindex':'0'}).triggerAll('data-attribute-changed data-visible-true');
+            this.accordianView ? $panel.slideDown() : $panel.show();
 
-        // make clicked tab navigable
-        $tab.attr('tabindex', '0');
+            // make clicked tab navigable
+            $tab.attr('tabindex', '0');
 
-        // give the tab focus
-        $tab.focus();
-
+            // give the tab focus
+            $tab.focus();
+        }else{
+            $panel.slideUp();
+            this.$tabs.find('.toggle-img').attr('src', this.settings.accordianImgIcon.collapsed)
+                    .attr('alt', this.settings.accordianImgAlt.collapsed);
+        }
     }
 
 } // end togglePanel()
 tpanelacc.prototype.bindHandlers = function () {
-    //console.log('aaa');
     var thisObj = this; // Store the this pointer for reference
 
     //////////////////////////////
@@ -470,7 +479,7 @@ tpanelacc.prototype.handleTabKeyDown = function ($tab, e) {
             {
 
                 // Only process if this is an accordian widget
-                if (this.accordian == true) {
+                if (this.accordian == true || this.closeable == true) {
                     // display or collapse the panel
                     this.togglePanel($tab);
 
