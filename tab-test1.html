@@ -137,27 +137,27 @@
 			</div> 
 		</div>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
-		<script src="bridget.js"></script>
-		<script src="acc.js"></script>
+		<script src="tpanelacc.js"></script>
 		<script>
 			$(document).ready(function () {
 				$('.tpanelacc').tpanelacc({
 					accordian: true,
-					accordianIcon: false, //default true
-					accordianImgIcon: {
-						expanded: "http://www.oaa-accessibility.org/media/examples/images/expanded.gif",
-						collapsed: "http://www.oaa-accessibility.org/media/examples/images/contracted.gif"
-					},
-					accordianImgAlt: {
-						collapsed: "close",
-						expanded: "open"
-					},
-					//tabClass: 'tabs', //tab element class default panel
-					//panelClass: 'faq-item', //panel element class default panel
-					//createToggleElm: false, //default true
-					accordianToggleElm: 'h2',
-					multiselectable: false,
-					accordianFirstOpen:false
+//					accordianIcon: false, //default true
+//					accordianImgIcon: {
+//						expanded: "http://www.oaa-accessibility.org/media/examples/images/expanded.gif",
+//						collapsed: "http://www.oaa-accessibility.org/media/examples/images/contracted.gif"
+//					},
+//					accordianImgAlt: {
+//						collapsed: "close",
+//						expanded: "open"
+//					},
+//					//tabClass: 'tabs', //tab element class default panel
+//					//panelClass: 'faq-item', //panel element class default panel
+					createToggleElm: false, //default true
+//					accordianToggleElm: 'h2',
+					multiselectable: true,
+                    closeable: true,
+//					accordianFirstOpen:false
 				});
 			});
 		</script>
