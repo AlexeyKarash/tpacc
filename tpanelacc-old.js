@@ -10,15 +10,15 @@
     } else if (typeof module == 'object' && module.exports) {
         // CommonJS
         module.exports = factory(
-			window,
-			require('jquery')
-		);
+            window,
+            require('jquery')
+        );
     } else {
         // browser global
         window.jQueryBridget = factory(
-			window,
-			window.jQuery
-		);
+            window,
+            window.jQuery
+        );
     }
 
 }(window, function factory(window, jQuery) {
@@ -31,10 +31,10 @@
     // helper function for logging errors
     // $.error breaks jQuery chaining
     var console = window.console;
-    var logError = typeof console == 'undefined' ? function () { } :
-	function (message) {
-	    console.error(message);
-	};
+    var logError = typeof console == 'undefined' ? function () {} :
+        function (message) {
+            console.error(message);
+        };
 
     // ----- jQueryBridget ----- //
 
@@ -57,7 +57,7 @@
         }
 
         // make jQuery plugin
-        $.fn[namespace] = function (arg0 /*, arg1 */) {
+        $.fn[namespace] = function (arg0 /*, arg1 */ ) {
             if (typeof arg0 == 'string') {
                 // method call $().plugin( 'methodName', { options } )
                 // shift arguments by 1
@@ -79,7 +79,7 @@
                 var instance = $.data(elem, namespace);
                 if (!instance) {
                     logError(namespace + ' not initialized. Cannot call methods, i.e. ' +
-							 pluginMethodStr);
+                        pluginMethodStr);
                     return;
                 }
 
@@ -156,6 +156,7 @@ function keyCodes() {
 var defaults = {
     accordian: false,
     multiselectable: true,
+    closeable: false,
     tabClass: 'tab',
     panelClass: 'panel',
     accordianIcon: true,
@@ -169,10 +170,10 @@ var defaults = {
     },
     accordianToggleElm: 'h3',
     accordianFirstOpen: true,
-    accordianIconToEnd: false,
-    accordianToggleble: false
+    accordianIconToEnd: false
 };
 var counter = 0;
+
 function tpanelacc(id, options) {
     this.settings = $.extend({}, defaults, options);
     // define the class properties
@@ -185,11 +186,12 @@ function tpanelacc(id, options) {
     this.accordianFirstOpen = ((this.accordianView) ? this.settings.accordianFirstOpen : true);
     //this.accordianIcon = this.settings.accordianIcon;
     this.createLayout();
+    this.closeable = ((!this.accordian) ? this.settings.closeable : false);
     //console.log('bbb');
     this.$tabs = this.$panel.find('.' + this.settings.tabClass); // Array of panel tabs.
     // Bind event handlers
     this.bindHandlers();
-    this.accordianToggleble = this.settings.accordianToggleble;
+
     // Initialize the tab panel
     this._init();
     //console.log(this.settings);
@@ -203,19 +205,23 @@ tpanelacc.prototype.createLayout = function () {
 tpanelacc.prototype.tpanelaccLayout = function () {
     var tabsTitles = [],
         set = this.settings,
-		accFirstOpen = this.accordianFirstOpen;
+        accFirstOpen = this.accordianFirstOpen;
     this.$panels.each(function (idx, elm) {
         $(elm).attr({
             'role': 'tabpanel',
             'id': 'tp' + counter + '-panel' + idx,
             'aria-labelledby': 'tp' + counter + '-tab' + idx
-        }).css('display', ((accFirstOpen && idx == 0) ? 'block' : 'none'));
+        }).css('visibility', ((accFirstOpen && idx == 0) ? 'visible' : 'hidden'));
+        if (accFirstOpen && idx == 0) {
+            $(elm).addClass('active-tab');
+        }
         tabsTitles[idx] = $(elm).data('tab-toggle');
     });
     var tablist;
     if (this.$panel.find(".tablist").length == 0) {
-        tablist = this.$panel.find('.tablist');
+
         this.$panel.prepend('<ul class="tablist" role="tablist"></ul>');
+        tablist = this.$panel.find('.tablist');
         for (i = 0; i < this.$panels.length; i++) {
             tablist.append('<li id="tp' + counter + '-tab' + i + '" class="' + set.tabClass + '" aria-controls="tp' + counter + '-panel' + i + '" aria-selected="' + ((i == 0) ? 'true' : 'false') + '" role="tab" tabindex="' + ((i == 0) ? '0' : '-1') + '">' + tabsTitles[i] + '</li>');
         }
@@ -232,17 +238,15 @@ tpanelacc.prototype.tpanelaccLayout = function () {
             }).addClass(set.tabClass);
         });
     }
-    
-    
+    this.$panels.wrapAll('<div class="panels-wrapper"></div>')
+
     //this.$tabs = this.$panel.find('.'+settings.tabClass); // Array of panel tabs.
-    //console.log(this.$tabs);
 }
 tpanelacc.prototype.accordianLayout = function () {
     //var tabsTitles = [];
-    //debugger;
     var set = this.settings,
-		createTabElm = true,
-		accFirstOpen = this.accordianFirstOpen;
+        createTabElm = true,
+        accFirstOpen = this.accordianFirstOpen;
     if (this.$panel.has("." + this.settings.tabClass).length) {
         createTabElm = false;
     }
@@ -259,7 +263,7 @@ tpanelacc.prototype.accordianLayout = function () {
         }
         if (createTabElm) {
             //$(elm).wrap('<div class="panel-container"></div>');
-            $(elm).before('<' + set.accordianToggleElm + ' id="tp' + counter + '-tab' + idx + '" class="accordian ' + set.tabClass + '" aria-controls="tp' + counter + '-panel' + idx + '" aria-selected="' + ((accFirstOpen && idx == 0) ? 'true' : 'false') + '" aria-expanded="' + ((accFirstOpen && idx == 0) ? 'true' : 'false') + '" role="tab" tabindex="' + ((idx == 0) ? '0' : '-1') + '">' + $(elm).data('tab-toggle') + '</' + set.accordianToggleElm + '>');
+            $(elm).before('<' + set.accordianToggleElm + ' id="tp' + counter + '-tab' + idx + '" class="accordian ' + set.tabClass + '" aria-controls="tp' + counter + '-panel' + idx + '" aria-selected="' + ((accFirstOpen && idx == 0) ? 'true' : 'false') + '" role="tab" tabindex="' + ((idx == 0) ? '0' : '-1') + '">' + $(elm).data('tab-toggle') + '</' + set.accordianToggleElm + '>');
             if (set.accordianIconToEnd) {
                 $(elm).prev(".accordian").append(toggleImg);
             } else {
@@ -267,20 +271,19 @@ tpanelacc.prototype.accordianLayout = function () {
             }
         } else {
             $(elm).prev("." + set.tabClass).addClass("accordian")
-				.attr({
-				    'id': "tp" + counter + "-tab" + idx,
-				    "aria-controls": "tp" + counter + "-panel" + idx,
-				    "aria-selected": ((accFirstOpen && idx == 0) ? 'true' : 'false'),
-                    "aria-expanded": ((accFirstOpen && idx == 0) ? 'true' : 'false'),
-				    "role": "tab",
-				    "tabindex": ((idx == 0) ? '0' : '-1')
-				});//.prepend(toggleImg);
+                .attr({
+                    'id': "tp" + counter + "-tab" + idx,
+                    "aria-controls": "tp" + counter + "-panel" + idx,
+                    "aria-selected": ((accFirstOpen && idx == 0) ? 'true' : 'false'),
+                    "role": "tab",
+                    "tabindex": ((idx == 0) ? '0' : '-1')
+                }); //.prepend(toggleImg);
             if (set.accordianIconToEnd) {
                 $("#tp" + counter + "-tab" + idx).append(toggleImg);
             } else {
                 $("#tp" + counter + "-tab" + idx).prepend(toggleImg);
             }
-            $('#tp' + counter + '-panel' + idx + ", #tp" + counter + "-tab" + idx);//.wrapAll('<div class="panel-container"></div>');
+            $('#tp' + counter + '-panel' + idx + ", #tp" + counter + "-tab" + idx); //.wrapAll('<div class="panel-container"></div>');
         }
 
 
@@ -291,202 +294,225 @@ tpanelacc.prototype.accordianLayout = function () {
     });
 }
 tpanelacc.prototype._init =
-tpanelacc.prototype.init = function () {
-    var $tab; // the selected tab - if one is selected
+    tpanelacc.prototype.init = function () {
+        var $tab; // the selected tab - if one is selected
 
-    // add aria attributes to the panels
-    this.$panels.attr('aria-hidden', 'true');
+        // add aria attributes to the panels
+        this.$panels.attr('aria-hidden', 'true');
 
-    // get the selected tab
-    $tab = this.$tabs.filter('[aria-selected="true"]');
+        // get the selected tab
+        $tab = this.$tabs.filter('[aria-selected="true"]');
 
-    if ($tab == undefined) {
-        $tab = this.$tabs.first();
-    }
+        if ($tab == undefined) {
+            $tab = this.$tabs.first();
+        }
 
-    // show the panel that the selected tab controls and set aria-hidden to false
-    this.$panel.find('#' + $tab.attr('aria-controls')).attr({'aria-hidden':'false','tabindex':"0"});
+        // show the panel that the selected tab controls and set aria-hidden to false
+        this.$panel.find('#' + $tab.attr('aria-controls')).attr({
+            'aria-hidden': 'false',
+            'tabindex': "0"
+        });
 
-    //console.log(" inst " + counter);
-    //console.log(this.settings);
-} // end init()
+    } // end init()
 tpanelacc.prototype.switchTabs = function ($curTab, $newTab) {
-    console.log("switchTabs");
-    // Remove the highlighting from the current tab
-    $curTab.removeClass('focus');
+        console.log("switchTabs");
+        // Remove the highlighting from the current tab
+        $curTab.removeClass('focus');
 
-    // remove tab from the tab order and update its aria-selected attribute
-    $curTab.attr('tabindex', '-1').attr('aria-selected', 'false');
+        // remove tab from the tab order and update its aria-selected attribute
+        $curTab.attr('tabindex', '-1').attr('aria-selected', 'false');
 
 
-    // Highlight the new tab and update its aria-selected attribute
-    $newTab.attr('aria-selected', 'true');
+        // Highlight the new tab and update its aria-selected attribute
+        $newTab.attr('aria-selected', 'true');
 
-    // If activating new tab/panel, swap the displayed panels
-    if (!this.accordianView || this.accordian == false) {
-        // hide the current tab panel and set aria-hidden to true
-        this.$panel.find('#' + $curTab.attr('aria-controls')).attr({'aria-hidden':'true','tabindex':'-1'}).trigger('data-attribute-changed');
-        this.accordianView ? this.$panel.find('#' + $curTab.attr('aria-controls')).slideUp() : this.$panel.find('#' + $curTab.attr('aria-controls')).attr({'aria-hidden':'true','tabindex':'-1'}).hide();
+        // If activating new tab/panel, swap the displayed panels
+        if (!this.accordianView || this.accordian == false) {
+            // hide the current tab panel and set aria-hidden to true
+            this.$panel.find('#' + $curTab.attr('aria-controls')).attr({
+                'aria-hidden': 'true',
+                'tabindex': '-1'
+            }).trigger('data-attribute-changed');
+            this.$panels.removeClass('prev-selected-tab');
+            this.accordianView ? this.$panel.find('#' + $curTab.attr('aria-controls')).slideUp() : this.$panel.find('#' + $curTab.attr('aria-controls')).attr({
+                'aria-hidden': 'true',
+                'tabindex': '-1'
+            }).css('visibility', 'hidden').removeClass('active-tab').addClass('prev-selected-tab'); //;.hide();
 
-        // update the aria-expanded attribute for the old tab
-        $curTab.attr('aria-expanded', 'false');
+            // update the aria-expanded attribute for the old tab
+            $curTab.attr('aria-expanded', 'false');
 
-        // show the new tab panel and set aria-hidden to false
-        this.$panel.find('#' + $newTab.attr('aria-controls')).attr({'aria-hidden':'false','tabindex':'0'}).triggerAll('data-attribute-changed data-visible-true');
-        this.accordianView ? this.$panel.find('#' + $newTab.attr('aria-controls')).slideDown() : this.$panel.find('#' + $newTab.attr('aria-controls')).attr({'aria-hidden':'false','tabindex':'0'}).show();
+            // show the new tab panel and set aria-hidden to false
+            this.$panel.find('#' + $newTab.attr('aria-controls')).attr({
+                'aria-hidden': 'false',
+                'tabindex': '0'
+            }).triggerAll('data-attribute-changed data-visible-true');
+            this.accordianView ? this.$panel.find('#' + $newTab.attr('aria-controls')).slideDown() : this.$panel.find('#' + $newTab.attr('aria-controls')).attr({
+                'aria-hidden': 'false',
+                'tabindex': '0'
+            }).css('visibility', 'visible').addClass('active-tab'); //.show();
 
-        // update the aria-expanded attribute for the new tab
-        $newTab.attr('aria-expanded', 'true');
-        if (this.accordianView == true) {
+            // update the aria-expanded attribute for the new tab
+            $newTab.attr('aria-expanded', 'true');
+            if (this.accordianView == true) {
 
-            this.$tabs.find('img').attr('src', this.settings.accordianImgIcon.collapsed)
-				.attr('alt', this.settings.accordianImgAlt.collapsed);//'collapsed' - 'http://www.oaa-accessibility.org/media/examples/images/contracted.gif'
+                this.$tabs.find('img').attr('src', this.settings.accordianImgIcon.collapsed)
+                    .attr('alt', this.settings.accordianImgAlt.collapsed); //'collapsed' - 'http://www.oaa-accessibility.org/media/examples/images/contracted.gif'
 
-            // Update the selected tab's aria-selected attribute
-            $newTab.find('img').attr('src', this.settings.accordianImgIcon.expanded)
-				.attr('alt', this.settings.accordianImgAlt.expanded);//'expanded' - 'http://www.oaa-accessibility.org/media/examples/images/expanded.gif'
+                // Update the selected tab's aria-selected attribute
+                $newTab.find('img').attr('src', this.settings.accordianImgIcon.expanded)
+                    .attr('alt', this.settings.accordianImgAlt.expanded); //'expanded' - 'http://www.oaa-accessibility.org/media/examples/images/expanded.gif'
+            }
         }
-    }
 
-    // Make new tab navigable
-    $newTab.attr('tabindex', '0');
+        // Make new tab navigable
+        $newTab.attr('tabindex', '0');
 
-    // give the new tab focus
-    $newTab.focus();
+        // give the new tab focus
+        $newTab.focus();
 
-} // end switchTabs()
+    } // end switchTabs()
 tpanelacc.prototype.togglePanel = function ($tab) {
-    console.log("togglePanel");
-    $panel = this.$panel.find('#' + $tab.attr('aria-controls'));
-    if (this.accordian == true && this.accordianView == true) {
-        if ($panel.attr('aria-hidden') == 'true') {
-            //console.log('aa' + $tab);
-            $panel.attr({'aria-hidden':'false','tabindex':'0'}).slideDown().triggerAll('data-attribute-changed data-visible-true');
-            $tab.find('.toggle-img').attr('src', this.settings.accordianImgIcon.expanded).attr('alt', this.settings.accordianImgAlt.expanded);
+        console.log("togglePanel");
+        $panel = this.$panel.find('#' + $tab.attr('aria-controls'));
+        if (this.accordian == true && this.accordianView == true) {
+            if ($panel.attr('aria-hidden') == 'true') {
+                $panel.attr({
+                    'aria-hidden': 'false',
+                    'tabindex': '0'
+                }).slideDown().triggerAll('data-attribute-changed data-visible-true');
+                $tab.find('.toggle-img').attr('src', this.settings.accordianImgIcon.expanded).attr('alt', this.settings.accordianImgAlt.expanded);
 
-            // update the aria-expanded attribute
-            $tab.attr('aria-expanded', 'true');
+                // update the aria-expanded attribute
+                $tab.attr('aria-expanded', 'true');
+            } else {
+                $panel.attr({
+                    'aria-hidden': 'true',
+                    'tabindex': '-1'
+                }).slideUp().trigger('data-attribute-changed');
+                $panel.slideUp(100);
+                $tab.find('.toggle-img').attr('src', this.settings.accordianImgIcon.collapsed).attr('alt', this.settings.accordianImgAlt.collapsed);
+
+                // update the aria-expanded attribute
+                $tab.attr('aria-expanded', 'false');
+            }
         } else {
-            $panel.attr({'aria-hidden':'true','tabindex':'-1'}).slideUp().trigger('data-attribute-changed');
-            $panel.slideUp(100);
-            $tab.find('.toggle-img').attr('src', this.settings.accordianImgIcon.collapsed).attr('alt', this.settings.accordianImgAlt.collapsed);
-
-            // update the aria-expanded attribute
-            $tab.attr('aria-expanded', 'false');
-        }
-    } else {
-        if(this.accordianToggleble == true && $tab.attr('aria-expanded') == 'true'){
-            this.$panels.attr({'aria-hidden':'true','tabindex':'-1'}).trigger('data-attribute-changed');//.slideUp();
-            this.accordianView ? this.$panels.slideUp() : this.$panels.hide();
-            this.$tabs.attr('tabindex', '-1').attr({
-                'aria-selected': 'false',
-                "aria-expanded": 'false'
-            });
-            this.$tabs.find('.toggle-img').attr('src', this.settings.accordianImgIcon.collapsed)
-                .attr('alt', this.settings.accordianImgAlt.collapsed); //'collapsed' - 'http://www.oaa-accessibility.org/media/examples/images/contracted.gif'
-            $tab.attr('tabindex', '0');
-            $tab.attr({
-                'aria-selected': 'true'
-            });
-        }else {
-            this.$panels.attr({'aria-hidden':'true','tabindex':'-1'}).trigger('data-attribute-changed');//.slideUp();
-            this.accordianView ? this.$panels.not($panel).slideUp() : this.$panels.not($panel).hide();
+            var isCurrentSelected = false;
+            if ($panel.attr('aria-hidden') == 'false') {
+                isCurrentSelected = true;
+            }
+            this.$panels.attr({
+                'aria-hidden': 'true',
+                'tabindex': '-1'
+            }).removeClass('prev-selected-tab').trigger('data-attribute-changed'); //.slideUp();
+            this.$panels.filter('.active-tab').removeClass('active-tab').addClass('prev-selected-tab');
+            this.accordianView ? this.$panels.not($panel).slideUp() : this.$panels.not($panel).css('visibility', 'hidden'); //.hide();
             // remove all tabs from the tab order and reset their aria-selected attribute
             this.$tabs.attr('tabindex', '-1').attr({
                 'aria-selected': 'false',
                 "aria-expanded": 'false'
             });
             // Update the selected tab's aria-selected attribute
-            $tab.attr({
-                'aria-selected': 'true',
-                "aria-expanded": 'true'
-            });
-
-            if (this.accordianView == true) {
-                this.$tabs.find('.toggle-img').attr('src', this.settings.accordianImgIcon.collapsed)
-                    .attr('alt', this.settings.accordianImgAlt.collapsed); //'collapsed' - 'http://www.oaa-accessibility.org/media/examples/images/contracted.gif'
-
-                // Update the selected tab's aria-selected attribute
-                $tab.find('.toggle-img').attr('src', this.settings.accordianImgIcon.expanded)
-                    .attr('alt', this.settings.accordianImgAlt.expanded); //'expanded' - 'http://www.oaa-accessibility.org/media/examples/images/expanded.gif'
+            var stop = false;
+            if (isCurrentSelected && !this.accordian && this.closeable) {
+                stop = true;
             }
-            // show the clicked tab panel
-            $panel.attr({'aria-hidden': 'false', 'tabindex':'0'}).triggerAll('data-attribute-changed data-visible-true');
-            this.accordianView ? $panel.slideDown() : $panel.show();
+            if (!stop) {
+                $tab.attr({
+                    'aria-selected': 'true',
+                    "aria-expanded": 'true'
+                });
+                if (this.accordianView == true) {
+                    this.$tabs.find('.toggle-img').attr('src', this.settings.accordianImgIcon.collapsed)
+                        .attr('alt', this.settings.accordianImgAlt.collapsed); //'collapsed' - 'http://www.oaa-accessibility.org/media/examples/images/contracted.gif'
+                    // Update the selected tab's aria-selected attribute
+                    $tab.find('.toggle-img').attr('src', this.settings.accordianImgIcon.expanded)
+                        .attr('alt', this.settings.accordianImgAlt.expanded); //'expanded' - 'http://www.oaa-accessibility.org/media/examples/images/expanded.gif'
+                }
+                // show the clicked tab panel
+                $panel.attr({
+                    'aria-hidden': 'false',
+                    'tabindex': '0'
+                }).triggerAll('data-attribute-changed data-visible-true');
+                this.accordianView ? $panel.slideDown() : $panel.css('visibility', 'visible').addClass('active-tab'); //.show();
 
-            // make clicked tab navigable
-            $tab.attr('tabindex', '0');
+                // make clicked tab navigable
+                $tab.attr('tabindex', '0');
 
-            // give the tab focus
-            $tab.focus();
+                // give the tab focus
+                $tab.focus();
+            } else {
+                $panel.slideUp();
+                this.$tabs.find('.toggle-img').attr('src', this.settings.accordianImgIcon.collapsed)
+                    .attr('alt', this.settings.accordianImgAlt.collapsed);
+            }
         }
-    }
 
-} // end togglePanel()
+    } // end togglePanel()
 tpanelacc.prototype.bindHandlers = function () {
-    //console.log('aaa');
-    var thisObj = this; // Store the this pointer for reference
+        var thisObj = this; // Store the this pointer for reference
 
-    //////////////////////////////
-    // Bind handlers for the tabs / accordian headers
+        //////////////////////////////
+        // Bind handlers for the tabs / accordian headers
 
-    // bind a tab keydown handler
-    this.$tabs.keydown(function (e) {
-        return thisObj.handleTabKeyDown($(this), e);
-    });
+        // bind a tab keydown handler
+        this.$tabs.keydown(function (e) {
+            return thisObj.handleTabKeyDown($(this), e);
+        });
 
-    // bind a tab keypress handler
-    this.$tabs.keypress(function (e) {
-        return thisObj.handleTabKeyPress($(this), e);
-    });
+        // bind a tab keypress handler
+        this.$tabs.keypress(function (e) {
+            return thisObj.handleTabKeyPress($(this), e);
+        });
 
-    // bind a tab click handler
-    this.$tabs.click(function (e) {
-        return thisObj.handleTabClick($(this), e);
-    });
+        // bind a tab click handler
+        this.$tabs.click(function (e) {
+            return thisObj.handleTabClick($(this), e);
+        });
 
-    // bind a tab focus handler
-    this.$tabs.focus(function (e) {
-        return thisObj.handleTabFocus($(this), e);
-    });
+        // bind a tab focus handler
+        this.$tabs.focus(function (e) {
+            return thisObj.handleTabFocus($(this), e);
+        });
 
-    // bind a tab blur handler
-    this.$tabs.blur(function (e) {
-        return thisObj.handleTabBlur($(this), e);
-    });
+        // bind a tab blur handler
+        this.$tabs.blur(function (e) {
+            return thisObj.handleTabBlur($(this), e);
+        });
 
-    /////////////////////////////
-    // Bind handlers for the panels
+        /////////////////////////////
+        // Bind handlers for the panels
 
-    // bind a keydown handlers for the panel focusable elements
-    this.$panels.keydown(function (e) {
-        return thisObj.handlePanelKeyDown($(this), e);
-    });
+        // bind a keydown handlers for the panel focusable elements
+        this.$panels.keydown(function (e) {
+            return thisObj.handlePanelKeyDown($(this), e);
+        });
 
-    // bind a keypress handler for the panel
-    this.$panels.keypress(function (e) {
-        return thisObj.handlePanelKeyPress($(this), e);
-    });
+        // bind a keypress handler for the panel
+        this.$panels.keypress(function (e) {
+            return thisObj.handlePanelKeyPress($(this), e);
+        });
 
-    // bind a panel click handler
-    this.$panels.click(function (e) {
-        return thisObj.handlePanelClick($(this), e);
-    });
+        // bind a panel click handler
+        this.$panels.click(function (e) {
+            return thisObj.handlePanelClick($(this), e);
+        });
 
-} // end bindHandlers()
+    } // end bindHandlers()
 tpanelacc.prototype.handleTabKeyDown = function ($tab, e) {
 
-    if (e.altKey) {
-        // do nothing
-        return true;
-    }
+        if (e.altKey) {
+            // do nothing
+            return true;
+        }
 
-    switch (e.keyCode) {
+        switch (e.keyCode) {
         case this.keys.enter:
         case this.keys.space:
             {
+
                 // Only process if this is an accordian widget
-                if (this.accordian == true || (this.accordianView && this.accordianToggleble)) {
+                if (this.accordian == true || this.closeable == true) {
                     // display or collapse the panel
                     this.togglePanel($tab);
 
@@ -569,16 +595,16 @@ tpanelacc.prototype.handleTabKeyDown = function ($tab, e) {
                 e.stopPropagation();
                 return false;
             }
-    }
-} // end handleTabKeyDown()
+        }
+    } // end handleTabKeyDown()
 tpanelacc.prototype.handleTabKeyPress = function ($tab, e) {
 
-    if (e.altKey) {
-        // do nothing
-        return true;
-    }
+        if (e.altKey) {
+            // do nothing
+            return true;
+        }
 
-    switch (e.keyCode) {
+        switch (e.keyCode) {
         case this.keys.enter:
         case this.keys.space:
         case this.keys.left:
@@ -606,50 +632,50 @@ tpanelacc.prototype.handleTabKeyPress = function ($tab, e) {
                 e.stopPropagation();
                 return false;
             }
-    }
+        }
 
-    return true;
+        return true;
 
-} // end handleTabKeyPress()
+    } // end handleTabKeyPress()
 tpanelacc.prototype.handleTabClick = function ($tab, e) {
 
-    // make clicked tab navigable
-    $tab.attr('tabindex', '0').attr('aria-selected', 'true');
+        // make clicked tab navigable
+        $tab.attr('tabindex', '0').attr('aria-selected', 'true');
 
-    // remove all tabs from the tab order and update their aria-selected attribute
-    this.$tabs.not($tab).attr('tabindex', '-1').attr('aria-selected', 'false');
+        // remove all tabs from the tab order and update their aria-selected attribute
+        this.$tabs.not($tab).attr('tabindex', '-1').attr('aria-selected', 'false');
 
-    // Expand the new panel
-    this.togglePanel($tab);
+        // Expand the new panel
+        this.togglePanel($tab);
 
-    e.stopPropagation();
-    return false;
+        e.stopPropagation();
+        return false;
 
-} // end handleTabClick()
+    } // end handleTabClick()
 tpanelacc.prototype.handleTabFocus = function ($tab, e) {
 
-    // Add the focus class to the tab
-    $tab.addClass('focus');
+        // Add the focus class to the tab
+        $tab.addClass('focus');
 
-    return true;
+        return true;
 
-} // end handleTabFocus()
+    } // end handleTabFocus()
 tpanelacc.prototype.handleTabBlur = function ($tab, e) {
 
-    // Remove the focus class to the tab
-    $tab.removeClass('focus');
+        // Remove the focus class to the tab
+        $tab.removeClass('focus');
 
-    return true;
+        return true;
 
-} // end handleTabBlur()
+    } // end handleTabBlur()
 tpanelacc.prototype.handlePanelKeyDown = function ($panel, e) {
 
-    if (e.altKey) {
-        // do nothing
-        return true;
-    }
+        if (e.altKey) {
+            // do nothing
+            return true;
+        }
 
-    switch (e.keyCode) {
+        switch (e.keyCode) {
         case this.keys.tab:
             {
                 var $focusable = $panel.find(':focusable');
@@ -814,48 +840,48 @@ tpanelacc.prototype.handlePanelKeyDown = function ($panel, e) {
                 e.preventDefault();
                 return false;
             }
-    }
+        }
 
-    return true;
+        return true;
 
-} // end handlePanelKeyDown()
+    } // end handlePanelKeyDown()
 tpanelacc.prototype.handlePanelKeyPress = function ($panel, e) {
 
-    if (e.altKey) {
-        // do nothing
-        return true;
-    }
+        if (e.altKey) {
+            // do nothing
+            return true;
+        }
 
-    if (e.ctrlKey && (e.keyCode == this.keys.pageup || e.keyCode == this.keys.pagedown)) {
-        e.stopPropagation();
-        e.preventDefault();
-        return false;
-    }
+        if (e.ctrlKey && (e.keyCode == this.keys.pageup || e.keyCode == this.keys.pagedown)) {
+            e.stopPropagation();
+            e.preventDefault();
+            return false;
+        }
 
-    switch (e.keyCode) {
+        switch (e.keyCode) {
         case this.keys.esc:
             {
                 e.stopPropagation();
                 e.preventDefault();
                 return false;
             }
-    }
+        }
 
-    return true;
+        return true;
 
-} // end handlePanelKeyPress()
+    } // end handlePanelKeyPress()
 tpanelacc.prototype.handlePanelClick = function ($panel, e) {
-    var $tab = $('#' + $panel.attr('aria-labelledby'));
+        var $tab = $('#' + $panel.attr('aria-labelledby'));
 
-    // make clicked panel's tab navigable
-    $tab.attr('tabindex', '0').attr('aria-selected', 'true');
+        // make clicked panel's tab navigable
+        $tab.attr('tabindex', '0').attr('aria-selected', 'true');
 
-    // remove all tabs from the tab order and update their aria-selected attribute
-    this.$tabs.not($tab).attr('tabindex', '-1').attr('aria-selected', 'false');
+        // remove all tabs from the tab order and update their aria-selected attribute
+        this.$tabs.not($tab).attr('tabindex', '-1').attr('aria-selected', 'false');
 
-    return true;
+        return true;
 
-} // end handlePanelClick()
+    } // end handlePanelClick()
 $.extend($.expr[':'], {
     focusable: function (element) {
         var nodeName = element.nodeName.toLowerCase();
@@ -889,7 +915,8 @@ $.extend($.expr[':'], {
 });
 $.fn.extend({
     triggerAll: function (events, params) {
-        var el = this, i, evts = events.split(' ');
+        var el = this,
+            i, evts = events.split(' ');
         for (i = 0; i < evts.length; i += 1) {
             el.trigger(evts[i], params);
         }

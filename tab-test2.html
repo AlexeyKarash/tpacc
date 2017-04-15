@@ -31,16 +31,19 @@
 			border-radius-topright: 5px; 
 			border-radius-topleft: 5px; 
 
-			float: left; 
-			display: inline; /* IE float bug fix */ 
+/*			float: left; */
+			display: inline-block; /* IE float bug fix */
 		} 
+        .panels-wrapper {
+            position: relative;overflow:hidden;
 
+        }
 		.panel { 
 			clear: both; 
 			display: block; 
 			margin: 0 0 0 0; 
 			padding: 10px; 
-			width: 600px; 
+			width: 100%;
 			border: 1px solid black; 
 
 			-webkit-border-radius-topright: 10px; 
@@ -52,6 +55,10 @@
 			border-radius-topright: 10px; 
 			border-radius-bottomleft: 10px; 
 			border-radius-bottomright: 10px; 
+            position: absolute;
+            top: 0;
+            left: 0;
+
 		} 
 
 		ul.controlList { 
@@ -65,8 +72,25 @@
 		} 
 
 		div[aria-hidden='true'] { 
-			display: none; 
-		} 
+            visibility: hidden;
+            animation: tabOutRight 0.6s forwards;
+            transition: visibility 0.01s ease 0.6s;
+		}
+        .active-tab ~ div.prev-selected-tab[aria-hidden='true'] {
+            visibility: hidden;
+            animation: tabOutLeft 0.6s forwards;
+            transition: visibility 0.01s ease 0.6s;
+        }
+        div[aria-hidden='false'] {
+            position: relative;
+            animation: tabInRight 0.6s forwards;
+            transition: visibility 0.3s ease;
+        }
+        .prev-selected-tab ~ div.active-tab[aria-hidden='false'] {
+            position: relative;
+            animation: tabInLeft 0.6s forwards;
+            transition: visibility 0.3s ease;
+        }
 
 		.focus { 
 			margin-top: 0; 
@@ -86,7 +110,56 @@
 			position: absolute; 
 			left: -300em; 
 			top: -30em; 
-		} </style>
+		}
+
+
+
+        @keyframes tabInLeft {
+            0% {
+                 transform: translateX(-101%)
+            }
+            100% {
+                transform: translateX(0)
+
+            }
+        }
+        @keyframes tabInRight {
+            0% {
+                transform: translateX(101%)
+            }
+            100% {
+                transform: translateX(0)
+
+            }
+        }
+        @keyframes tabOutRight {
+            0% {
+                transform: translateX(0)
+            }
+            99.9% {
+                transform: translateX(101%)
+            }
+            100% {
+
+                transform: translateX(-101%)
+            }
+        }
+        @keyframes tabOutLeft {
+            0% {
+                transform: translateX(0)
+            }
+            99.9% {
+                transform: translateX(-101%)
+            }
+            100% {
+
+                transform: translateX(101%)
+            }
+        }
+
+
+
+    </style>
 </head>
 <body>
 	<div role="application"> 
