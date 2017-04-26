@@ -656,7 +656,7 @@ tpanelacc.prototype.handlePanelKeyDown = function ($panel, e) {
                 var curNdx = $focusable.index($(e.target));
                 var panelNdx = this.$panels.index($panel);
                 var numPanels = this.$panels.length
-
+                console.log('$focusable',$focusable);
                 if (e.shiftKey) {
                     // if this is the first focusable item in the panel
                     // find the preceding expanded panel (if any) that has
@@ -856,37 +856,39 @@ tpanelacc.prototype.handlePanelClick = function ($panel, e) {
     return true;
 
 } // end handlePanelClick()
-$.extend($.expr[':'], {
-    focusable: function (element) {
-        var nodeName = element.nodeName.toLowerCase();
-        var tabIndex = $(element).attr('tabindex');
+//$.extend($.expr[':'], {
+//    focusable: function (element) {
+//        debugger;
+//        var nodeName = element.nodeName.toLowerCase();
+//        var tabIndex = $(element).attr('tabindex');
+//
+//        // the element and all of its ancestors must be visible
+//        if (($(element)[(nodeName == 'area' ? 'parents' : 'closest')](':hidden').length) == true) {
+//            return false;
+//        }
+//
+//        // If tabindex is defined, its value must be greater than 0
+//        if (!isNaN(tabIndex) && tabIndex > -1) {
+//            return true;
+//        }
+//
+//        // if the element is a standard form control, it must not be disabled
+//        if (/input|select|textarea|button|object/.test(nodeName) == true) {
+//
+//            return !element.disabled;
+//        }
+//
+//        // if the element is a link, href must be defined
+//        if ((nodeName == 'a' || nodeName == 'area') == true) {
+//
+//            return (element.href.length > 0);
+//        }
+//
+//        // this is some other page element that is not normally focusable.
+//        return false;
+//    }
+//});
 
-        // the element and all of its ancestors must be visible
-        if (($(element)[(nodeName == 'area' ? 'parents' : 'closest')](':hidden').length) == true) {
-            return false;
-        }
-
-        // If tabindex is defined, its value must be greater than 0
-        if (!isNaN(tabIndex) && tabIndex < 0) {
-            return false;
-        }
-
-        // if the element is a standard form control, it must not be disabled
-        if (/input|select|textarea|button|object/.test(nodeName) == true) {
-
-            return !element.disabled;
-        }
-
-        // if the element is a link, href must be defined
-        if ((nodeName == 'a' || nodeName == 'area') == true) {
-
-            return (element.href.length > 0);
-        }
-
-        // this is some other page element that is not normally focusable.
-        return false;
-    }
-});
 $.fn.extend({
     triggerAll: function (events, params) {
         var el = this, i, evts = events.split(' ');
@@ -899,3 +901,104 @@ $.fn.extend({
 if (jQuery && jQuery.bridget) {
     jQuery.bridget('tpanelacc', tpanelacc);
 }
+
+
+/*! jQuery UI - v1.12.1 - 2017-04-26
+* http://jqueryui.com
+* Includes: focusable.js
+* Copyright jQuery Foundation and other contributors; Licensed MIT */
+
+(function( factory ) {
+    if ( typeof define === "function" && define.amd ) {
+
+        // AMD. Register as an anonymous module.
+        define([ "jquery" ], factory );
+    } else {
+
+        // Browser globals
+        factory( jQuery );
+    }
+}(function( $ ) {
+
+    $.ui = $.ui || {};
+
+    var version = $.ui.version = "1.12.1";
+
+
+    /*!
+ * jQuery UI Focusable 1.12.1
+ * http://jqueryui.com
+ *
+ * Copyright jQuery Foundation and other contributors
+ * Released under the MIT license.
+ * http://jquery.org/license
+ */
+
+    //>>label: :focusable Selector
+    //>>group: Core
+    //>>description: Selects elements which can be focused.
+    //>>docs: http://api.jqueryui.com/focusable-selector/
+
+
+
+    // Selectors
+    $.ui.focusable = function( element, hasTabindex ) {
+        var map, mapName, img, focusableIfVisible, fieldset,
+            nodeName = element.nodeName.toLowerCase();
+
+        if ( "area" === nodeName ) {
+            map = element.parentNode;
+            mapName = map.name;
+            if ( !element.href || !mapName || map.nodeName.toLowerCase() !== "map" ) {
+                return false;
+            }
+            img = $( "img[usemap='#" + mapName + "']" );
+            return img.length > 0 && img.is( ":visible" );
+        }
+
+        if ( /^(input|select|textarea|button|object)$/.test( nodeName ) ) {
+            focusableIfVisible = !element.disabled;
+
+            if ( focusableIfVisible ) {
+
+                // Form controls within a disabled fieldset are disabled.
+                // However, controls within the fieldset's legend do not get disabled.
+                // Since controls generally aren't placed inside legends, we skip
+                // this portion of the check.
+                fieldset = $( element ).closest( "fieldset" )[ 0 ];
+                if ( fieldset ) {
+                    focusableIfVisible = !fieldset.disabled;
+                }
+            }
+        } else if ( "a" === nodeName ) {
+            focusableIfVisible = element.href || hasTabindex;
+        } else {
+            focusableIfVisible = hasTabindex;
+        }
+
+        return focusableIfVisible && $( element ).is( ":visible" ) && visible( $( element ) );
+    };
+
+    // Support: IE 8 only
+    // IE 8 doesn't resolve inherit to visible/hidden for computed values
+    function visible( element ) {
+        var visibility = element.css( "visibility" );
+        while ( visibility === "inherit" ) {
+            element = element.parent();
+            visibility = element.css( "visibility" );
+        }
+        return visibility !== "hidden";
+    }
+
+    $.extend( $.expr[ ":" ], {
+        focusable: function( element ) {
+            return $.ui.focusable( element, $.attr( element, "tabindex" ) != null );
+        }
+    } );
+
+    var focusable = $.ui.focusable;
+
+
+
+
+}));

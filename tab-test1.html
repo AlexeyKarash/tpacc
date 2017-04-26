@@ -86,12 +86,16 @@
 				position: absolute;
 				left: -300em;
 				top: -30em;
-			} </style>
+			}
+            *:focus {
+                border:2px solid green;
+            }
+        </style>
 	</head>
 	<body>
-		<div role="application">
+		<div role="application" tabindex="-1">
 
-			<h2>Happy Time Pizza On-line Ordering System</h2>
+			<h2 tabindex="">Happy Time Pizza On-line Ordering System</h2>
 			<div class="tpanelacc">
 				<div class="panel" data-tab-toggle="Crust">
 					<h3 id="crust-label">Select Crust</h3> 
@@ -138,7 +142,7 @@
 			</div> 
 		</div>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
-		<script src="tpanelacc.js"></script>
+	<script src="tpanelacc.js"></script>
 		<script>
 			$(document).ready(function () {
 				$('.tpanelacc').tpanelacc({
@@ -161,6 +165,7 @@
 //					accordianFirstOpen:false
                     accordianToggleble: true
 				});
+                console.log($('body').find(':focusable'));
 			});
 		</script>
 	</body>
