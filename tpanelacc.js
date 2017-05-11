@@ -225,7 +225,7 @@ tpanelacc.prototype.tpanelaccLayout = function () {
             $(elm).attr({
                 'role': 'tab',
                 'id': 'tp' + counter + '-tab' + idx,
-                'aria-labelledby': 'tp' + counter + '-tab' + idx,
+                //'aria-labelledby': 'tp' + counter + '-tab' + idx,
                 'aria-controls': 'tp' + counter + '-panel' + idx,
                 'aria-selected': ((idx == 0) ? 'true' : 'false'),
                 'tabindex': ((idx == 0) ? '0' : '-1')
