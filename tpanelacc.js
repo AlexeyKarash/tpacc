@@ -221,6 +221,7 @@ tpanelacc.prototype.tpanelaccLayout = function () {
         }
     } else {
         tablist = this.$panel.find('.tablist');
+        tablist.attr('role', 'tablist');
         tablist.find('li').each(function (idx, elm) {
             $(elm).attr({
                 'role': 'tab',
